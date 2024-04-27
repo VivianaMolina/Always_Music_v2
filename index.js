@@ -26,8 +26,6 @@ const insertstudents = async (nombre, rut, curso, nivel) => {
             values: [nombre, rut, curso, nivel],
         };
 
-        // const text = "insert into students (nombre, rut, curso, nivel) values ($1, $2, $3, $4)";
-        // const values = [nombre, rut, curso, nivel];
         const response = await pool.query(insert);
        
         console.log(`Estudiante ${nombre} agregado con éxito`, response);
@@ -50,8 +48,6 @@ const getStudentRecordbyRut = async (rut) => {
             text: 'SELECT * FROM students where rut = $1',
             values: [rut],
         };        
-        // const text = "SELECT * FROM students where rut = $1";
-        // const values = [rut];
 
         const registro = await pool.query(consulta);
 
@@ -93,9 +89,6 @@ const getRegisteredStudents = async () => {
 // Crear una función asíncrona para actualizar los datos de un estudiante en la base de datos.
 const updateStudent = async (nombre, rut, curso, nivel) => {
     try {
-        // const text = "UPDATE students SET nombre = $1, rut = $2, curso = $3, nivel = $4 where rut = $2";
-        // const values = [nombre, rut, curso, nivel];
-
         //Hacer todas las consultas con un JSON como argumento del método query
         const update = {
             text: "UPDATE students SET nombre = $1, rut = $2, curso = $3, nivel = $4 where rut = $2",
@@ -119,8 +112,6 @@ const updateStudent = async (nombre, rut, curso, nivel) => {
 // Crear una función asíncrona para eliminar el registro de un estudiante de la base de datos.
 const deleteStudent = async (rut) => {
     try {
-        // const text = "DELETE FROM students where rut = $1";
-        // const values = [rut];
         //Hacer todas las consultas con un JSON como argumento del método query
         const deleteStudent = {
             text: 'DELETE FROM students where rut = $1',
