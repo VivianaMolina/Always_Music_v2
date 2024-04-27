@@ -45,6 +45,7 @@ const getStudentRecordbyRut = async (rut) => {
     try {
         //Hacer todas las consultas con un JSON como argumento del método query
         const consulta = {
+            rowMode: "array",
             text: 'SELECT * FROM students where rut = $1',
             values: [rut],
         };        
@@ -69,6 +70,7 @@ const getRegisteredStudents = async () => {
     try {
         //Hacer todas las consultas con un JSON como argumento del método query
         const consulta = {
+            rowMode: "array",
             text: "SELECT * FROM students"
         };  
         const registro = await pool.query(consulta);
