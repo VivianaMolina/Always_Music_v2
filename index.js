@@ -22,19 +22,21 @@ const insertstudents = async (nombre, rut, curso, nivel) => {
     try {
         //Hacer todas las consultas con un JSON como argumento del método query
         const insert = {
-            text: 'INSERT INTO students (nombre, rut, curso, nivel) values ($1, $2, $3, $4)',
-            values: [nombre, rut, curso, nivel],
+            text: "INSERT INTO students (nombre, rut, curso, nivel) values ($1, $2, $3, $4)",
+            values: [nombre, rut, curso, nivel]
         };
 
-        const response = await pool.query(insert);
-       
-        console.log(`Estudiante ${nombre} agregado con éxito`, response);
+        const registro = await pool.query(insert);
+        if (registro.rowCount == 1){
+            console.log(`Estudiante ${nombre} agregado con éxito`, registro);
+        } else {
+            console.log(`Estudiante ${nombre} rut ${rut} no se pudo insertar, ya existe en la Base de Datos`);
+        }
 
     } catch (error) {
         // 3. Capturar los posibles errores en todas las consultas e imprimirlos por consola.
         const { code } = error;
         console.log("Se ha producido un error al insertar el registro : Código del error = ", code, " - ", error.message);
-     //   throw error;
     } finally {
         pool.end();
     }
@@ -46,9 +48,9 @@ const getStudentRecordbyRut = async (rut) => {
         //Hacer todas las consultas con un JSON como argumento del método query
         const consulta = {
             rowMode: "array",
-            text: 'SELECT * FROM students where rut = $1',
+            text: "SELECT * FROM students where rut = $1",
             values: [rut],
-        };        
+        };
 
         const registro = await pool.query(consulta);
 
@@ -59,7 +61,6 @@ const getStudentRecordbyRut = async (rut) => {
         // 3. Capturar los posibles errores en todas las consultas e imprimirlos por consola.
         const { code } = error;
         console.log("Se ha producido un error al obtener el registro por rut : Código del error = ", code, " - ", error.message);
-      //  throw error;
     } finally {
         pool.end();
     }
@@ -72,7 +73,7 @@ const getRegisteredStudents = async () => {
         const consulta = {
             rowMode: "array",
             text: "SELECT * FROM students"
-        };  
+        };
         const registro = await pool.query(consulta);
 
         // Muestra el registro por consola
@@ -82,7 +83,6 @@ const getRegisteredStudents = async () => {
         // 3. Capturar los posibles errores en todas las consultas e imprimirlos por consola.
         const { code } = error;
         console.log("Se ha producido un error al consultar los registros : Código del error = ", code, " - ", error.message);
-      //  throw error;
     } finally {
         pool.end();
     }
@@ -95,17 +95,20 @@ const updateStudent = async (nombre, rut, curso, nivel) => {
         const update = {
             text: "UPDATE students SET nombre = $1, rut = $2, curso = $3, nivel = $4 where rut = $2",
             values: [nombre, rut, curso, nivel],
-        };        
+        };
 
         const registro = await pool.query(update);
+        if (registro.rowCount == 1){
+            // Muestra el registro por consola
+            console.log(`Estudiante ${nombre} editado con éxito =`, registro.rowCount, "registros");
+        } else {
+            console.log(`Estudiante ${nombre} rut ${rut} no existe en la Base de Datos`);
+        }
 
-        // Muestra el registro por consola
-        console.log(`Estudiante ${nombre} editado con éxito`, registro);
     } catch (error) {
         // 3. Capturar los posibles errores en todas las consultas e imprimirlos por consola.
         const { code } = error;
         console.log("Se ha producido un error al actualizar el registro : Código del error = ", code, " - ", error.message);
-     //   throw error;
     } finally {
         pool.end();
     }
@@ -116,18 +119,21 @@ const deleteStudent = async (rut) => {
     try {
         //Hacer todas las consultas con un JSON como argumento del método query
         const deleteStudent = {
-            text: 'DELETE FROM students where rut = $1',
+            text: "DELETE FROM students where rut = $1",
             values: [rut],
-        };  
+        };
         const registro = await pool.query(deleteStudent);
-
-        // Muestra el registro por consola
-        console.log(`Registro de estudiante con rut ${rut} eliminado`, registro);
+        
+        if (registro.rowCount == 1){
+            // Muestra el registro por consola
+            console.log(`Registro de estudiante con rut ${rut} eliminado =`, registro.rowCount, "registros");
+        } else{
+            console.log(`Estudiante con rut ${rut} no existe en la Base de Datos`);
+        }
     } catch (error) {
-       // 3. Capturar los posibles errores en todas las consultas e imprimirlos por consola.
+        // 3. Capturar los posibles errores en todas las consultas e imprimirlos por consola.
         const { code } = error;
         console.log("Se ha producido un error al eliminar el registro : Código del error = ", code, " - ", error.message);
-     //   throw error;
     } finally {
         pool.end();
     }
